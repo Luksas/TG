@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Dto\SendEmailNotificationDto;
 use App\Dto\SendSmsNotificationDto;
 use App\Service\NotificationChannelInterface;
 use App\Service\NotificationSendingService;
@@ -25,13 +26,26 @@ class NotificationController extends AbstractController
     #[Route('/notification/send', name: 'notification_send')]
     public function send(Request $rawRequest): Response
     {
-        $request = new SendSmsNotificationDto();
-        $request->setPhoneNumber("+1111111");
-        $request->setTitle("Sms from xxx.");
-        $request->setText("Text from xxx.");
-        $request->setChannelName(NotificationChannelInterface::CHANNEL_SMS);
+        // Not adding authentication, request verification and processing.
+        // Such thing could be done depending on business logic, e.g. if current API client has specific channels assigned to them etc.
 
-        $this->notificationSendingService->sendNotification($request);
+        // Run sms.
+        $smsRequest = new SendSmsNotificationDto();
+        $smsRequest->setPhoneNumber("+1111111");
+        $smsRequest->setTitle("Sms from xxx.");
+        $smsRequest->setText("Text from xxx.");
+        $smsRequest->setChannelType(NotificationChannelInterface::CHANNEL_SMS);
+        $smsRequest->setFailOverChannelType(NotificationChannelInterface::CHANNEL_SMS_BACKUP);
+
+        $this->notificationSendingService->sendNotification($smsRequest);
+
+        // Run email.
+        $emailRequest = new SendEmailNotificationDto();
+        $emailRequest->setTitle("Sms from xxx.");
+        $emailRequest->setChannelType(NotificationChannelInterface::CHANNEL_EMAIL);
+        $emailRequest->setFailOverChannelType(NotificationChannelInterface::CHANNEL_EMAIL);
+
+        $this->notificationSendingService->sendNotification($emailRequest);
 
         return new Response(Response::HTTP_ACCEPTED);
     }

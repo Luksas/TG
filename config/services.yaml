@@ -38,3 +38,8 @@ services:
         calls:
             - setAvailable: ['%env(resolve:SMS_CHANNEL_AVAILABLE)%']
             - setProviderUrl: ['%env(resolve:SMS_CHANNEL_PROVIDER_URL)%']
+
+    App\Config\BackupSmsChannelConfig:
+        calls:
+            - setAvailable: [ '%env(resolve:BACKUP_SMS_CHANNEL_AVAILABLE)%' ]
+            - setProviderUrl: [ '%env(resolve:BACKUP_SMS_CHANNEL_PROVIDER_URL)%' ]

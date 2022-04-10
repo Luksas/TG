@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use InvalidArgumentException;
+use App\Exception\NotificationChannelFailureException;
 
 class NotificationChannelService
 {
@@ -19,14 +19,17 @@ class NotificationChannelService
         $this->notificationChannels = $notificationChannels;
     }
 
-    public function getChannel(int $channel): NotificationChannelInterface
+    /**
+     * @throws NotificationChannelFailureException
+     */
+    public function getChannel(int $channelType): NotificationChannelInterface
     {
-        foreach ($this->notificationChannels as $notificationChannel) {
-            if ($channel === $notificationChannel->getChannelType()) {
-                return $notificationChannel;
+        foreach ($this->notificationChannels as $channel) {
+            if ($channel->isAvailable() && $channelType === $channel->getChannelType()) {
+                return $channel;
             }
         }
 
-        throw new InvalidArgumentException("Invalid notification channel.");
+        throw new NotificationChannelFailureException("Channel $channelType is unavailable.");
     }
 }

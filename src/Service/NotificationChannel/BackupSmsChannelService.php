@@ -2,20 +2,20 @@
 
 namespace App\Service\NotificationChannel;
 
-use App\Config\EmailChannelConfig;
+use App\Config\BackupSmsChannelConfig;
 use App\Dto\AbstractSendNotificationDto;
-use App\Dto\SendEmailNotificationDto;
+use App\Dto\SendSmsNotificationDto;
 use App\Exception\NotificationChannelFailureException;
 use App\Service\NotificationChannelInterface;
 
-class EmailChannelService implements NotificationChannelInterface
+class BackupSmsChannelService implements NotificationChannelInterface
 {
-    private EmailChannelConfig $config;
+    private BackupSmsChannelConfig $config;
 
     /**
-     * @param EmailChannelConfig $config
+     * @param BackupSmsChannelConfig $config
      */
-    public function __construct(EmailChannelConfig $config)
+    public function __construct(BackupSmsChannelConfig $config)
     {
         $this->config = $config;
     }
@@ -27,17 +27,17 @@ class EmailChannelService implements NotificationChannelInterface
     {
         // Here we can inject any configuration, enable or disable a service etc..
 
-        if ($request instanceof SendEmailNotificationDto) {
+        if ($request instanceof SendSmsNotificationDto) {
             // send here
             echo $this->config->getProviderUrl();
         } else {
-            throw new NotificationChannelFailureException("Email notification channel failure.");
+            throw new NotificationChannelFailureException("Backup sms channel failure.");
         }
     }
 
     public function getChannelType(): int
     {
-        return NotificationChannelInterface::CHANNEL_EMAIL;
+        return NotificationChannelInterface::CHANNEL_SMS_BACKUP;
     }
 
     public function isAvailable(): bool

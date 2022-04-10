@@ -4,38 +4,54 @@ namespace App\Dto;
 
 abstract class AbstractSendNotificationDto
 {
-    private string $channelName;
-    private string $failOverChannelName;
+    private const MAX_RETRY_COUNT = 1;
+
+    private int $retryCount = 0;
+    private int $channelType;
+    private int $failOverChannelType;
 
     /**
-     * @return string
+     * @return int
      */
-    public function getFailOverChannelName(): string
+    public function getFailOverChannelType(): int
     {
-        return $this->failOverChannelName;
+        return $this->failOverChannelType;
     }
 
     /**
-     * @param string $failOverChannelName
+     * @param int $failOverChannelType
      */
-    public function setFailOverChannelName(string $failOverChannelName): void
+    public function setFailOverChannelType(int $failOverChannelType): void
     {
-        $this->failOverChannelName = $failOverChannelName;
+        $this->failOverChannelType = $failOverChannelType;
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getChannelName(): string
+    public function getChannelType(): int
     {
-        return $this->channelName;
+        return $this->channelType;
     }
 
     /**
-     * @param string $channelName
+     * @param string $channelType
      */
-    public function setChannelName(string $channelName): void
+    public function setChannelType(string $channelType): void
     {
-        $this->channelName = $channelName;
+        $this->channelType = $channelType;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canRetry(): bool
+    {
+        return $this->retryCount < AbstractSendNotificationDto::MAX_RETRY_COUNT;
+    }
+
+    public function incrementRetryCount(): void
+    {
+        $this->retryCount++;
     }
 }
